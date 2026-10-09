@@ -1,38 +1,62 @@
-const myInput = document.querySelector('#myInput');
+         const myInput = document.querySelector('#myInput');
+         
+         const items = [];
 
-function captureEnterKeyPress() {
-   if (!myInput) return;
-   myInput.addEventListener('keydown', function(event) {
-      if (event.key !== 'Enter') return;
+         function captureEnterKeyPress() {
+            if (!myInput) return;
+            myInput.addEventListener('keydown', function(event) {
+               if (event.key !== 'Enter') return;
 
-      const inputValue = myInput.value.trim();
-      if (!inputValue) return;
+               const inputValue = myInput.value.trim();
+               if (!inputValue) return;
 
-      localStorage.setItem('inputValue', JSON.stringify(inputValue));
-      const item = classifyInput(inputValue);
-      addItem(item.text, item.selector);
-      myInput.value = '';
-   });
-}
+               const item = classifyInput(inputValue);
+               const newItem = createItem(item.text, item.type);
+               items.push(newItem);
+               renderItem(newItem);
+               myInput.value = '';
 
-function classifyInput(text) {
-   if (text.startsWith('http://') || text.startsWith('https://') || text.startsWith('www.')) {
-      return { text, selector: '#linksList' };
-   }
-   if (text.startsWith('!')) {
-      return { text: text.slice(1).trim(), selector: '#notesList' };
-   }
-   return { text, selector: '#tasksList' };
-}
+               localStorage.setItem('items', JSON.stringify(items));
+            });
+         }
 
-captureEnterKeyPress();
+         function classifyInput(text) {
+            if (text.startsWith('http://') || text.startsWith('https://') || text.startsWith('www.')) {
+               return { text, type: '#linksList' };
+            }
+            if (text.startsWith('!')) {
+               return { text: text.slice(1).trim(), type: '#notesList' };
+            }
+            return { text, type: '#tasksList' };
+         }
+
+         captureEnterKeyPress();
+         
 
 
-function addItem(text, selector) {
-   const list = document.querySelector(selector);
-   if (!list) return;
-   const li = document.createElement('li');
-   li.textContent = text;
-   list.appendChild(li);
-}
+         function createItem(text, type) {
+            return {
+               id: Date.now() + Math.random(),
+               text,
+               type,
+               status: 'todo',
+               createdAt: Date(),
+               remindAt: ''
+            };
+
+
+         }
+         
+            
+            function renderItem(item) {
+            const list = document.querySelector(item.type);
+            if (!list) return;
+            const li = document.createElement('li');
+            li.textContent = item.text;
+            list.appendChild(li);
+         }
+
+         
+         
+
 
