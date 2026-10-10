@@ -64,8 +64,21 @@
                   });
                li.appendChild(checkbox);
             }
-               const delete_button = document.createElement('button');
-               li.classList.toggle('button', delete_button.click);
+               const deleteButton = document.createElement('button');
+               deleteButton.textContent = 'Delete';
+               deleteButton.type = 'button';
+               
+
+               deleteButton.addEventListener('click', function(){
+                 const index = items.findIndex(entry =>entry.id === item.id);
+                 if (index !== -1) {
+                  items.splice(index, 1);
+                  li.remove();
+                  localStorage.setItem('items', JSON.stringify(items));
+                 }
+               });
+               li.appendChild(deleteButton);
+               
                li.appendChild(document.createTextNode(item.text));
                list.appendChild(li);
             }
