@@ -64,6 +64,8 @@
                   });
                li.appendChild(checkbox);
             }
+               const delete_button = document.createElement('button');
+               li.classList.toggle('button', delete_button.click);
                li.appendChild(document.createTextNode(item.text));
                list.appendChild(li);
             }
