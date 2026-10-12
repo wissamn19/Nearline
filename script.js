@@ -35,14 +35,16 @@
 
 
             function createItem(text, type) {
+               const reminder = parseReminder(text);
                return {
                   id: Date.now() + Math.random(),
                   text,
                   type,
                   status: 'todo',
                   createdAt: Date(),
-                  remindAt: ''
+                  remindAt: reminder.remindAt
                };
+
 
             }
             
@@ -81,6 +83,34 @@
                
                li.appendChild(document.createTextNode(item.text));
                list.appendChild(li);
+            }
+
+            function parseReminder(text) {
+               const regex = /@(\d{1,2}):(\d{2})/;
+               const match = text.match(regex); 
+               if (!match) return {
+                 text, remindAt: ''
+               }
+               const hours = Number(match[1]);
+               const minutes = Number(match[2]);
+               if (hours > 23 || minutes > 59 ) {
+                  return {text, remindAt: ''
+                     
+                  }
+               }
+
+               const d = new Date();
+               d.setHours(hours, minutes, 0, 0);
+
+               if (d.getTime() <= Date.now()) {
+                  d.setDate(d.getDate() + 1);
+                  d.getTime();
+               } 
+               return {
+                  text: text.replace(regex, '').trim(),
+                  remindAt: d.toISOString()
+               }
+
             }
 
             
