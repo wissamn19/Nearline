@@ -2,6 +2,8 @@
                
                const items = JSON.parse(localStorage.getItem('items')) || [];
 
+
+
                function captureEnterKeyPress() {
                   if (!myInput) return;
                   myInput.addEventListener('keydown', function(event) {
@@ -41,7 +43,7 @@
                      text: reminder.text,
                      type,
                      status: 'todo',
-                     createdAt: Date.now(),
+                     createdAt: Date(),
                      remindAt: reminder.remindAt,
                      reminded: false
 
@@ -130,7 +132,7 @@
                   items.forEach(function (item) {
                      if (item.remindAt !== null && Date.parse(item.remindAt) <= now && 
                      item.status !== 'done' && !item.reminded) {
-                     console.log('Reminder:', item.text);
+                     notify(item.text);
                      item.reminded = true;
                      localStorage.setItem('items', JSON.stringify(items));
                    }
@@ -139,6 +141,19 @@
 
                   checkReminders();                     
                   setInterval(checkReminders, 5000); 
+
+
+               function notify(text) {
+                  if (Notification.permission === 'default') {
+  Notification.requestPermission();
+}
+                  if (Notification.permission === 'granted') {
+                     new Notification('Nearline', {body: text });
+                  } else {
+                     alert('Reminder: ' + text);
+                  }
+
+               }
 
                
 
