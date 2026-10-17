@@ -22,6 +22,7 @@ export default function Home() {
   const [selectedId, setSelectedId] = useState(1)
   const [activeCapture, setActiveCapture] = useState<Item['kind'] | null>(null)
   const [captureText, setCaptureText] = useState('')
+  const [isClassifying, setIsClassifying] = useState(false)
   const captureRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -33,15 +34,28 @@ export default function Home() {
   }, [])
 
   const filtered = useMemo(() => items.filter((item) => item.title.toLowerCase().includes(query.toLowerCase()) && (activeType === 'All' || item.kind === activeType)), [items, query, activeType])
-  const classifyCapture = (title: string): Item['kind'] => {
-    const value = title.trim().toLowerCase()
-    if (/^(https?:\/\/|www\.)/.test(value) || value.includes('.com/') || value.includes('://')) return 'Link'
-    if (value.includes('idea') || value.includes('remember') || value.endsWith('?')) return 'Note'
-    return 'Task'
+  const classifyCapture = async (title: string): Promise<Item['kind']> => {
+    const response = await fetch('/api/classify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: title }),
+    })
+    if (!response.ok) throw new Error('Classification failed')
+    const result = await response.json() as { kind: Item['kind'] }
+    return result.kind
   }
-  const addItem = (kind?: Item['kind'], title?: string) => {
+  const addItem = async (kind?: Item['kind'], title?: string) => {
     const cleanTitle = title?.trim() || quickCapture.trim()
-    const resolvedKind = kind || classifyCapture(cleanTitle)
+    if (!cleanTitle && !kind) return
+    setIsClassifying(!kind)
+    let resolvedKind = kind || 'Task'
+    try {
+      if (!kind && cleanTitle) resolvedKind = await classifyCapture(cleanTitle)
+    } catch {
+      resolvedKind = /(https?:\/\/|www\.)/.test(cleanTitle.toLowerCase()) ? 'Link' : 'Task'
+    } finally {
+      setIsClassifying(false)
+    }
     const next = { id: Date.now(), title: cleanTitle || `New ${resolvedKind.toLowerCase()}`, kind: resolvedKind, list: 'Personal', due: 'Today' }
     setItems((current) => [...current, next])
     setSelectedId(next.id)
@@ -72,8 +86,8 @@ export default function Home() {
       <section className="content">
         <header className="topbar"><div className="breadcrumbs"><span>Workspace</span><span>/</span><strong>My tasks</strong></div><div className="top-actions"><div className="search"><Search /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search anything..." /><kbd>⌘ K</kbd></div><div className="mini-avatar">AM</div></div></header>
         <div className="page-wrap">
-          <div className="page-heading"><div><div className="eyebrow"><span className="live-dot" /> QUICK CAPTURE / PERSONAL SPACE</div><h1>Catch it before it disappears.</h1><p>One line in. Nearline sorts the rest.</p></div><button className="primary-button" onClick={() => addItem()}><Plus /> Add item</button></div>
-          <div className="capture-bar"><span className="capture-label">Quick capture</span><input value={quickCapture} onChange={(event) => setQuickCapture(event.target.value)} placeholder="A task, thought, or link..." onKeyDown={(event) => { if (event.key === 'Enter' && !event.nativeEvent.isComposing && event.keyCode !== 229) addItem() }} /><span className="capture-hint">auto-sorts</span><button onClick={() => addItem()} aria-label="Create item"><Plus /></button></div>
+          <div className="page-heading"><div><div className="eyebrow"><span className="live-dot" /> QUICK CAPTURE / PERSONAL SPACE</div><h1>Catch it before it disappears.</h1><p>One line in. Nearline sorts the rest.</p></div><button className="primary-button" onClick={() => addItem()} disabled={isClassifying}><Plus /> {isClassifying ? 'Sorting...' : 'Add item'}</button></div>
+          <div className="capture-bar"><span className="capture-label">Quick capture</span><input value={quickCapture} onChange={(event) => setQuickCapture(event.target.value)} placeholder="A task, thought, or link..." onKeyDown={(event) => { if (event.key === 'Enter' && !event.nativeEvent.isComposing && event.keyCode !== 229) addItem() }} /><span className="capture-hint">{isClassifying ? 'sorting...' : 'AI auto-sorts'}</span><button onClick={() => addItem()} aria-label="Create item" disabled={isClassifying}><Plus /></button></div>
           <div className="dashboard-pulse"><div className="pulse-lead"><span className="pulse-mark"><Sparkles /></span><div><strong>Nearline is listening</strong><p>Your inbox stays clear while ideas keep moving.</p></div></div><div className="pulse-stat"><b>{items.filter((item) => item.done).length}</b><span>completed</span></div><div className="pulse-stat"><b>{items.length}</b><span>on your line</span></div><div className="pulse-streak"><span className="streak-label">WEEKLY RHYTHM</span><div className="streak-days">{['M','T','W','T','F','S','S'].map((day, index) => <span className={index < 4 ? 'filled' : ''} key={`${day}-${index}`}>{day}</span>)}</div></div></div>
           <div className="roadmap" ref={captureRef}><div className="roadmap-intro"><span className="roadmap-kicker">MANUAL OVERRIDE</span><span className="roadmap-hint">Tap a point when you already know where it belongs</span></div><div className="roadmap-track">{(['Task', 'Note', 'Link'] as const).map((kind, index) => <div className={activeCapture === kind ? `roadmap-stop ${kind.toLowerCase()} active-node` : `roadmap-stop ${kind.toLowerCase()}`} key={kind}><div className="roadmap-connector" /><button type="button" className="node-button" onClick={() => { setActiveCapture(kind); setCaptureText('') }} aria-label={`Capture ${kind}`}><span /><b>{kind}</b><i>+</i></button><small>{index === 0 ? 'Do it' : index === 1 ? 'Think it' : 'Keep it'}</small>{activeCapture === kind && <div className="node-capture"><input autoFocus value={captureText} onChange={(event) => setCaptureText(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.nativeEvent.isComposing && event.keyCode !== 229) submitCapture(); if (event.key === 'Escape') setActiveCapture(null) }} placeholder={`Add a ${kind.toLowerCase()}...`} aria-label={`${kind} capture input`} /></div>}</div>)}</div></div>
           <div className="toolbar"><div className="tabs"><button className={activeType === 'All' ? 'tab active' : 'tab'} onClick={() => setActiveType('All')}>All items</button><button className={activeType === 'Task' ? 'tab active' : 'tab'} onClick={() => setActiveType('Task')}><Check /> Tasks</button><button className={activeType === 'Note' ? 'tab active' : 'tab'} onClick={() => setActiveType('Note')}><FileText /> Notes</button><button className={activeType === 'Link' ? 'tab active' : 'tab'} onClick={() => setActiveType('Link')}><Link2 /> Links</button></div><button className="filter-button"><Filter /> Filter <ChevronDown /></button></div>
