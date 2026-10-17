@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { CalendarDays, ChevronDown, CircleHelp, FileText, Filter, Folder, Inbox, Link2, List, MoreHorizontal, Plus, Search, Settings, Sparkles, Target, Check, Zap } from 'lucide-react'
 import './styles.css'
 
@@ -19,12 +19,28 @@ export default function Home() {
   const [query, setQuery] = useState('')
   const [activeType, setActiveType] = useState<Item['kind'] | 'All'>('All')
   const [selectedId, setSelectedId] = useState(1)
+  const [activeCapture, setActiveCapture] = useState<Item['kind'] | null>(null)
+  const [captureText, setCaptureText] = useState('')
+  const captureRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const closeCapture = (event: MouseEvent) => {
+      if (captureRef.current && !captureRef.current.contains(event.target as Node)) setActiveCapture(null)
+    }
+    document.addEventListener('mousedown', closeCapture)
+    return () => document.removeEventListener('mousedown', closeCapture)
+  }, [])
 
   const filtered = useMemo(() => items.filter((item) => item.title.toLowerCase().includes(query.toLowerCase()) && (activeType === 'All' || item.kind === activeType)), [items, query, activeType])
-  const addItem = (kind: Item['kind'] = 'Task') => {
-    const next = { id: Date.now(), title: `New ${kind.toLowerCase()}`, kind, list: 'Personal', due: 'Today' }
+  const addItem = (kind: Item['kind'] = 'Task', title?: string) => {
+    const next = { id: Date.now(), title: title?.trim() || `New ${kind.toLowerCase()}`, kind, list: 'Personal', due: 'Today' }
     setItems((current) => [...current, next])
     setSelectedId(next.id)
+  }
+  const submitCapture = () => {
+    if (!activeCapture || !captureText.trim()) return
+    addItem(activeCapture, captureText)
+    setCaptureText('')
   }
   const toggleItem = (id: number) => setItems((current) => current.map((item) => item.id === id ? { ...item, done: !item.done } : item))
 
@@ -48,7 +64,7 @@ export default function Home() {
         <div className="page-wrap">
           <div className="page-heading"><div><div className="eyebrow"><span className="live-dot" /> PERSONAL SPACE</div><h1>Your day, in one line.</h1><p>Capture the thought, then move it forward.</p></div><button className="primary-button" onClick={() => addItem()}><Plus /> Add item</button></div>
           <div className="capture-bar"><span className="capture-label">Input</span><input placeholder="What needs your attention?" onKeyDown={(event) => { if (event.key === 'Enter' && !event.nativeEvent.isComposing && event.keyCode !== 229) addItem() }} /><button onClick={() => addItem()} aria-label="Create item"><Plus /></button></div>
-          <div className="timeline-header"><div className="timeline-line"><div className="timeline-node active-node"><span /><b>Task</b></div><div className="timeline-node"><span /><b>Note</b></div><div className="timeline-node"><span /><b>Link</b></div></div></div>
+          <div className="timeline-header" ref={captureRef}><div className="timeline-line">{(['Task', 'Note', 'Link'] as const).map((kind) => <div className={activeCapture === kind ? `timeline-node ${kind.toLowerCase()} active-node` : `timeline-node ${kind.toLowerCase()}`} key={kind}><button type="button" className="node-button" onClick={() => { setActiveCapture(kind); setCaptureText('') }} aria-label={`Capture ${kind}`}><span /><b>{kind}</b><i>+</i></button>{activeCapture === kind && <div className="node-capture"><input autoFocus value={captureText} onChange={(event) => setCaptureText(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.nativeEvent.isComposing && event.keyCode !== 229) submitCapture(); if (event.key === 'Escape') setActiveCapture(null) }} placeholder={`Add a ${kind.toLowerCase()}...`} aria-label={`${kind} capture input`} /></div>}</div>)}</div></div>
           <div className="toolbar"><div className="tabs"><button className={activeType === 'All' ? 'tab active' : 'tab'} onClick={() => setActiveType('All')}>All items</button><button className={activeType === 'Task' ? 'tab active' : 'tab'} onClick={() => setActiveType('Task')}><Check /> Tasks</button><button className={activeType === 'Note' ? 'tab active' : 'tab'} onClick={() => setActiveType('Note')}><FileText /> Notes</button><button className={activeType === 'Link' ? 'tab active' : 'tab'} onClick={() => setActiveType('Link')}><Link2 /> Links</button></div><button className="filter-button"><Filter /> Filter <ChevronDown /></button></div>
           <div className="item-grid">{filtered.map((item) => { const Icon = iconFor(item.kind); return <article className={selectedId === item.id ? 'item-card selected' : 'item-card'} key={item.id} onClick={() => setSelectedId(item.id)}><div className={`item-icon ${item.kind.toLowerCase()}`}><Icon /></div><div className="item-content"><div className="item-kicker">{item.kind}<span>·</span>{item.due}</div><h2 className={item.done ? 'complete' : ''}>{item.title}</h2><div className="item-footer"><span><Folder /> {item.list}</span><button className="small-check" aria-label={`Mark ${item.title} complete`} onClick={(event) => { event.stopPropagation(); toggleItem(item.id) }}>{item.done && <Check />}</button></div></div><MoreHorizontal className="card-more" /></article> })}<button className="empty-card" onClick={() => addItem('Note')}><Plus /><span>Add another item</span><small>Keep the line moving</small></button></div>
           <div className="focus-banner"><div className="banner-icon"><Sparkles /></div><div><strong>One clear next step</strong><p>Everything you capture belongs somewhere. Start small and keep going.</p></div><button className="secondary-button" onClick={() => addItem('Task')}>Plan focus time</button></div>
