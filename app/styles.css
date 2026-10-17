@@ -10,7 +10,13 @@
 .roadmap:before{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(90deg,rgba(108,92,231,.035),transparent 42%,rgba(79,184,138,.035));pointer-events:none}
 .roadmap-intro,.roadmap-track{position:relative;z-index:2}
 .roadmap-track{min-height:108px}
-.roadmap-track:before{top:12px;left:10%;right:10%;height:2px;background:#e6e4ed;box-shadow:none}
+.roadmap-track:before{top:12px;left:10%;right:10%;height:3px;background:#e6e4ed;box-shadow:none}
+.roadmap-progress{position:absolute;top:12px;left:10%;height:3px;border-radius:3px;background:linear-gradient(90deg,#7566df,#e0a06d,#62b5a6);z-index:1;transition:width .45s ease}
+.roadmap-you{position:absolute;top:-16px;left:calc(var(--roadmap-you, 18%) - 24px);font-size:8px;font-weight:700;letter-spacing:1px;color:#7566df;white-space:nowrap;transition:left .45s ease}
+.roadmap-you:after{content:'';position:absolute;left:50%;top:14px;width:1px;height:11px;background:#7566df;opacity:.45}
+.roadmap-step{display:block;margin-top:4px;font:700 13px Manrope;color:#373444;letter-spacing:-.15px}
+.roadmap-intro{align-items:flex-start}
+.roadmap-hint{padding-top:4px}
 .roadmap-stop{transition:transform .2s ease}.roadmap-stop:hover{transform:translateY(-3px)}.roadmap-stop.active-node{transform:translateY(-5px)}
 .node-button{filter:none}.node-button span{width:20px;height:20px;border-width:4px;box-shadow:0 0 0 4px #fff,0 1px 3px rgba(38,31,85,.12);transition:all .2s ease}.node-button:hover span,.roadmap-stop.active-node .node-button span{width:24px;height:24px;box-shadow:0 0 0 5px #fff,0 0 0 7px var(--purple-soft)}
 .roadmap-stop.task .node-button span{border-color:#7566df;background:#7566df}.roadmap-stop.note .node-button span{border-color:#e0a06d;background:#e0a06d}.roadmap-stop.link .node-button span{border-color:#62b5a6;background:#62b5a6}
