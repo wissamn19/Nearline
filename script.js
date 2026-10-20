@@ -145,8 +145,8 @@
 
                function notify(text) {
                   if (Notification.permission === 'default') {
-  Notification.requestPermission();
-}
+                     Notification.requestPermission();
+                  }
                   if (Notification.permission === 'granted') {
                      new Notification('Nearline', {body: text });
                   } else {
