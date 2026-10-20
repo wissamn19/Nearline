@@ -9,6 +9,7 @@
   --road: #E9ECEF;
   --dot: #D9DBE3;
   --brand: #6965DB;
+  --on-brand: #FFFFFF;
   --task: #E03131;
   --note: #1971C2;
   --link: #2F9E44;
@@ -28,7 +29,7 @@ body {
 }
 
 /* Hand-drawn outlines: a wobbly border drawn on a pseudo element */
-.top::after, .field::before, .cta::before, .timeline::after, .node::before, .item::before {
+.top::after, .field::before, .cta::before, .timeline::after, .node::before, .item::before, .toast::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -128,7 +129,7 @@ body {
   font-family: var(--display);
   font-size: 28px;
   font-weight: 700;
-  color: #fff;
+  color: var(--on-brand);
   background: var(--brand);
   border: 0;
   border-radius: 12px;
@@ -415,6 +416,7 @@ ul:empty::before {
 
 /* Narrow screens and the future floating panel: the road turns vertical */
 @media (max-width: 760px) {
+  .toasts { left: 16px; right: 16px; width: auto; }
   .saved { display: none; }
   .app { padding-top: 32px; }
   .capture { flex-direction: column; }
@@ -449,17 +451,84 @@ ul:empty::before {
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --ink: #E9ECEF; --stroke: #E9ECEF; --muted: #A3A3AD; --canvas: #121212; --paper: #1E1E1E;
-    --soft: #2A2A2E; --road: #34343C; --dot: #2B2B31; --brand: #8F8BF0;
+    --soft: #2A2A2E; --road: #34343C; --dot: #2B2B31; --brand: #8F8BF0; --on-brand: #1E1E1E;
     --task: #FF6B6B; --note: #4DABF7; --link: #51CF66;
   }
 }
 :root[data-theme="dark"] {
   --ink: #E9ECEF; --stroke: #E9ECEF; --muted: #A3A3AD; --canvas: #121212; --paper: #1E1E1E;
-  --soft: #2A2A2E; --road: #34343C; --dot: #2B2B31; --brand: #8F8BF0;
+  --soft: #2A2A2E; --road: #34343C; --dot: #2B2B31; --brand: #8F8BF0; --on-brand: #1E1E1E;
   --task: #FF6B6B; --note: #4DABF7; --link: #51CF66;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .item.drop, .node.pulse, .item input[type="checkbox"]:checked { animation: none; }
   .node, .cta { transition: none; }
+  .toast { animation: none; }
 }
+
+/* Reminder card */
+.toasts {
+  position: fixed;
+  right: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  display: grid;
+  gap: 14px;
+  width: min(340px, calc(100vw - 40px));
+  pointer-events: none;
+}
+
+.toast {
+  position: relative;
+  padding: 14px 16px;
+  background: color-mix(in srgb, var(--c) 22%, var(--paper));
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(30, 30, 30, 0.2);
+  pointer-events: auto;
+  animation: toast-in 0.3s ease-out;
+}
+
+.toast-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.toast-title::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: var(--c);
+  border: 2px solid var(--stroke);
+  border-radius: 50%;
+}
+
+.toast-text {
+  margin: 8px 0 12px;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+
+.toast-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.toast-actions button {
+  padding: 5px 14px;
+  font: inherit;
+  font-size: 17px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--stroke);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.toast-actions .primary { color: var(--on-brand); background: var(--brand); }
+.toast-actions button:hover { transform: translateY(-1px) rotate(-0.6deg); }
+.toast-actions button:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+
+@keyframes toast-in { from { opacity: 0; transform: translateY(18px); } }

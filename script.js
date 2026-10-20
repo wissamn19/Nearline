@@ -319,12 +319,68 @@ document.querySelectorAll('.lane').forEach(function (lane) {
 
 /* ---------- Reminders ---------- */
 
-function notify(text) {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification('Nearline', { body: text });
-  } else {
-    alert('Reminder: ' + text);
+function renderAll() {
+  Object.keys(lists).forEach(function (key) { lists[key].innerHTML = ''; });
+  items.forEach(function (item) { renderItem(item, false); });
+  updateCounts();
+}
+
+function makeButton(label, className, onClick) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = className;
+  button.textContent = label;
+  button.addEventListener('click', onClick);
+  return button;
+}
+
+// A hand-drawn card in the corner. It stays until you answer it.
+function showToast(item) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.setAttribute('role', 'alert');
+  toast.style.setProperty('--c', 'var(--' + item.type + ')');
+
+  const title = document.createElement('div');
+  title.className = 'toast-title';
+  title.textContent = 'Reminder';
+
+  const text = document.createElement('div');
+  text.className = 'toast-text';
+  text.textContent = item.text;
+
+  const actions = document.createElement('div');
+  actions.className = 'toast-actions';
+
+  actions.appendChild(makeButton(item.type === 'task' ? 'Done' : 'Got it', 'primary', function () {
+    if (item.type === 'task') {
+      item.status = 'done';
+      saveItems();
+      renderAll();
+    }
+    toast.remove();
+  }));
+
+  actions.appendChild(makeButton('Snooze 10 min', '', function () {
+    item.remindAt = Date.now() + 10 * 60 * 1000;
+    item.reminded = false;
+    saveItems();
+    renderAll();
+    toast.remove();
+  }));
+
+  toast.appendChild(title);
+  toast.appendChild(text);
+  toast.appendChild(actions);
+  document.querySelector('#toasts').appendChild(toast);
+}
+
+// The card always shows. A system notification is added when the tab is in the background.
+function notify(item) {
+  if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+    new Notification('Nearline reminder', { body: item.text, tag: String(item.id) });
   }
+  showToast(item);
 }
 
 function checkReminders() {
@@ -332,7 +388,7 @@ function checkReminders() {
   items.forEach(function (item) {
     const isDue = item.remindAt !== null && item.remindAt <= now;
     if (isDue && item.status !== 'done' && !item.reminded) {
-      notify(item.text);
+      notify(item);
       item.reminded = true;
       saveItems();
     }
