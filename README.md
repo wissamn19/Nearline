@@ -42,8 +42,8 @@ nearline/
 ├── index.html
 ├── style.css
 ├── script.js
-└── docs/
-    └── screenshot.png
+└── cover/
+    └── cover.png
 ```
 
 ## Limits
