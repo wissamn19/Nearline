@@ -62,7 +62,7 @@ You can get in and back to what you were doing in a few seconds, without touchin
 
 ## Demo
 
-**Try it:** [wissamn19.github.io/nearline](https://YOUR-USERNAME.github.io/nearline/)
+**Try it:** [wissamn19.github.io/nearline](https://wissamn19.github.io/nearline/)
 
 <!-- Add a short screen recording here, for example:
 ![Nearline in action](docs/demo.gif)
@@ -73,7 +73,7 @@ You can get in and back to what you were doing in a few seconds, without touchin
 Nearline has no dependencies and no build step.
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/nearline.git
+git clone https://github.com/wissamn19/nearline.git
 cd nearline
 ```
 
