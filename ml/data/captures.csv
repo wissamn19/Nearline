@@ -1,23 +1,23 @@
 text,label
-buy milk,task
+buy milk for the breakfast,task
 mom's birthday is in june,note
-send the report to the supervisor,task
+send the report to the supervisor and see if he will accept it,task
 idea: sort items by color,note
-cook dinner,task
+cook dinner for my family,task
 linear algebra is essential for ml,note
 get some research papers to read,task
 when we try to divide our model to train and test phase,note
-get new clothes,task
-ideas for a startup,note
+get new clothes for the event i want to attend,task
+ideas for my next startup,note
 set alarm for tomorrow date,task
 features are the x's and labels are the y's,note
 going to the gym,task
 ml has 3 domains,note
-write down my notes,task
+write down my notes about the last lecture,task
 preduction is when we can have preductions for data that has no output,note
 register for the deep learning course,task
 dot product is when we multiply each row from our first vector with the second one,note
-buy a new book,task
+buy a new book about machine learning,task
 SQL stands for Structured Query Language,note
 looking for my eyedrops,task
 hiragana and katkana practice,note
@@ -25,11 +25,11 @@ work on leetcode problems,task
 introduction to japanese scripts,note
 write down some new hirgana characters,task
 meet with design team next month,note
-get a new calculator,task
+get a new scientific calculator,task
 need to learn classical ML first to get into deep learning,note
 meet my friends for lunch,task
-new words in english,note
-buy new shoes,task
+new words in computer science english,note
+buy new brown shoes,task
 skin care needs list,note
 buy for coursera plus subscription,task
 visit an event next month,note
@@ -39,7 +39,7 @@ prepare some snacks,task
 online course next week,note
 get new stickers for my laptop,task
 family meet up next year,note
-summerize my lecture,task
+summerize my deep learning lecture,task
 first test will be in two months,note
 get a new clock for my room,task
 right now i feel the need to start making cool projects,note
