@@ -1,75 +1,125 @@
-text,label
-buy milk for the breakfast,task
-mom's birthday is in june,note
-send the report to the supervisor and see if he will accept it,task
-idea: sort items by color,note
-cook dinner for my family,task
-linear algebra is essential for ml,note
-get some research papers to read,task
-when we try to divide our model to train and test phase,note
-get new clothes for the event i want to attend,task
-ideas for my next startup,note
-set alarm for tomorrow date,task
-features are the x's and labels are the y's,note
-going to the gym,task
-ml has 3 domains,note
-write down my notes about the last lecture,task
-preduction is when we can have preductions for data that has no output,note
-register for the deep learning course,task
-dot product is when we multiply each row from our first vector with the second one,note
-buy a new book about machine learning,task
-SQL stands for Structured Query Language,note
-looking for my eyedrops,task
-hiragana and katkana practice,note
-work on leetcode problems,task
-introduction to japanese scripts,note
-write down some new hirgana characters,task
-meet with design team next month,note
-get a new scientific calculator,task
-need to learn classical ML first to get into deep learning,note
-meet my friends for lunch,task
-new words in computer science english,note
-buy new brown shoes,task
-skin care needs list,note
-buy for coursera plus subscription,task
-visit an event next month,note
-write a new article on medium,task
-what is learning rate,note
-prepare some snacks,task
-online course next week,note
-get new stickers for my laptop,task
-family meet up next year,note
-summerize my deep learning lecture,task
-first test will be in two months,note
-get a new clock for my room,task
-right now i feel the need to start making cool projects,note
-prepare my brainstorm for my research paper,task
-tomorrow will be great if what i planned for will happened,note
-writing my to do list for today's work,task
-you do not need all the answers you just need the courage to start,note
-solving some equations,task
-remember to take care of youself,note
-writing my assignement for databases lab,task
-still have one small step to get into training a model,note
-need to buy a new pc,task
-things i am working on: ML,note
-need to look for some resources for LLM,task
-learning rate is so important,note
-get a new framer,task
-keep working on my project everyday,note
-complete my dataset,task
-nothing is impossible,note
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+text,label,source
+buy milk for the breakfast,task,mine
+mom's birthday is in june,note,mine
+send the report to the supervisor and see if he will accept it,task,mine
+idea: sort items by color,note,mine
+cook dinner for my family,task,mine
+linear algebra is essential for ml,note,mine
+get some research papers to read,task,mine
+when we try to divide our model to train and test phase,note,mine
+get new clothes for the event i want to attend,task,mine
+ideas for my next startup,note,mine
+set alarm for tomorrow date,task,mine
+features are the x's and labels are the y's,note,mine
+going to the gym,task,mine
+ml has 3 domains,note,mine
+write down my notes about the last lecture,task,mine
+preduction is when we can have preductions for data that has no output,note,mine
+register for the deep learning course,task,mine
+dot product is when we multiply each row from our first vector with the second one,note,mine
+buy a new book about machine learning,task,mine
+SQL stands for Structured Query Language,note,mine
+looking for my eyedrops,task,mine
+hiragana and katkana practice,task,mine
+work on leetcode problems,task,mine
+introduction to japanese scripts,note,mine
+write down some new hirgana characters,task,mine
+meet with design team next month,task,mine
+get a new scientific calculator,task,mine
+need to learn classical ML first to get into deep learning,note,mine
+meet my friends for lunch,task,mine
+new words in computer science english,note,mine
+buy new brown shoes,task,mine
+skin care needs list,note,mine
+buy for coursera plus subscription,task,mine
+visit an event next month,task,mine
+write a new article on medium,task,mine
+what is learning rate,note,mine
+prepare some snacks,task,mine
+online course next week,note,mine
+get new stickers for my laptop,task,mine
+family meet up next year,note,mine
+summerize my deep learning lecture,task,mine
+first test will be in two months,note,mine
+get a new clock for my room,task,mine
+right now i feel the need to start making cool projects,note,mine
+prepare my brainstorm for my research paper,task,mine
+tomorrow will be great if what i planned for will happened,note,mine
+writing my to do list for today's work,task,mine
+you do not need all the answers you just need the courage to start,note,mine
+solving some equations,task,mine
+remember to take care of youself,note,mine
+writing my assignement for databases lab,task,mine
+still have one small step to get into training a model,note,mine
+need to buy a new pc,task,mine
+things i am working on: ML,note,mine
+need to look for some resources for LLM,task,mine
+learning rate is so important,note,mine
+get a new framer,task,mine
+keep working on my project everyday,task,mine
+complete my dataset,task,mine
+nothing is impossible,note,mine
+call the bank tomorrow morning and ask about the new card they promised me last week,task,added
+go through all the lecture slides again before the exam and write the summary sheet,task,added
+email the teacher about the research paper deadline and ask if we can have more time,task,added
+clean my desk and organize all the cables and chargers that are lying around,task,added
+prepare the presentation slides for the databases project and send them to my team,task,added
+pick up the package from the post office before it closes at five,task,added
+finish the linear algebra exercises from chapter three and check my answers,task,added
+renew my student card and print two copies of the registration form,task,added
+update my linkedin profile with the new project and the certificate,task,added
+back up all my project files to the external drive tonight,task,added
+pay the phone bill,task,added
+fix the wifi router,task,added
+wash the car,task,added
+print the form,task,added
+call dad,task,added
+charge my headphones,task,added
+train the model on the new data,task,added
+read chapter 4 of the deep learning book,task,added
+plot the loss curve for the last run,task,added
+push my code to github,task,added
+clean the dataset and remove duplicates,task,added
+watch the next lecture on gradient descent,task,added
+fix the bug in the classifier script,task,added
+download the iris dataset,task,added
+drink two liters of water today,task,added
+finish the book by friday,task,added
+start learning french this week,task,added
+decide what to cook tomorrow,task,added
+gradient descent intuition,note,added
+good podcast title ideas,note,added
+notes about pca,note,added
+the exam is hard,note,added
+favorite quote,note,added
+rain tomorrow maybe,note,added
+new gym opens soon,note,added
+cool project idea,note,added
+recipe from grandma,note,added
+wifi password is on the router,note,added
+meeting was fine,note,added
+japan trip someday,note,added
+"the difference between precision and recall is what you care about more, false alarms or missed cases",note,added
+backpropagation is just the chain rule applied again and again from the output back to the inputs,note,added
+the best time to study seems to be early in the morning before everyone wakes up,note,added
+my cousin said the corner shop sells milk cheaper than the supermarket near the university,note,added
+i noticed that i focus much better when my phone is in another room,note,added
+overfitting happens when the model memorizes the training data instead of learning the pattern,note,added
+the new cafe near the library has quiet corners and good coffee,note,added
+last time the presentation went well because i practiced out loud the day before,note,added
+a simple rule for choosing a learning rate is to start small and increase it slowly,note,added
+the professor said the final exam will focus on chapters two to five,note,added
+milk is cheaper at the corner store,note,added
+brown shoes go well with my blue jacket,note,added
+the gym is less crowded after eight pm,note,added
+skin care routine works better when i stay consistent,note,added
+my favorite snacks are dates and almonds,note,added
+the bus to the university takes twenty minutes,note,added
+sunscreen matters even in winter,note,added
+the pc i saw has sixteen gigabytes of ram,note,added
+should i switch to a desktop pc someday,note,added
+maybe i should start a blog about machine learning,note,added
+next semester will be busier than this one,note,added
+the deadline for the scholarship is in march,note,added
+feeling more motivated this week,note,added
+someone told me llm fine tuning is easier than it sounds,note,added
