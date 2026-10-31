@@ -1,5 +1,3 @@
-
-
 def fnv1a(data: bytes) -> int:
     h = 2166136261
     for b in data:
@@ -19,7 +17,7 @@ def featurize(text: str, size: int = 213) -> list[int]:
         counts[index] += 1
     return counts
         
-    
+"""
 print(fnv1a(b""), 2166136261)
 print(fnv1a(b"a"), 0xE40C292C)
 print(fnv1a(b"foobar"), 0xBF9CF968)
@@ -34,3 +32,4 @@ print(sum(featurize("café")) == 12 and checksum(featurize("café")) == 10138)
 print(checksum(featurize("call mom")) == 28353)
 print(sum(featurize("")) == 1)
 print("all good")
+"""
