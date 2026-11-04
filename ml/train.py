@@ -12,6 +12,7 @@ try:
 except ImportError:  # pragma: no cover - allows running the file directly
     from featurize import featurize
 
+import json, math
 
 def main() -> None:
     root = Path(__file__).resolve().parent
@@ -54,5 +55,10 @@ def main() -> None:
     print(f"saved trained model to: {model_path}")
 
 
+d = json.load(open("model.json"))
+p = lambda t: 1 / (1 + math.exp(-(d["intercept"] + sum(w * c for w, c in zip(d["coef"], featurize(t))))))
+for t in ["buy milk", "buy mlik", "buuy milk", "milk"]:
+    print(round(p(t), 3), t)
+    
 if __name__ == "__main__":
     main()
