@@ -43,6 +43,7 @@ def main() -> None:
     acc = accuracy_score(y_test, y_pred)
     auc = roc_auc_score(y_test, y_proba)
 
+
     print(f"train size: {len(X_train)}")
     print(f"test size: {len(X_test)}")
     print(f"test accuracy: {acc:.3f}")
