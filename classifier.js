@@ -22,7 +22,7 @@ function featurize(text, size = 2048) {
 }
 
 function pTask(text) {
-    z = featurize(text, NEARLINE_MODEL.intercept);
+    z = featurize(text, NEARLINE_MODEL.size);
     for (let i = 0; i < NEARLINE_MODEL.size; i++) {
         z += NEARLINE_MODEL.coef[i] * featurize(text, NEARLINE_MODEL.size)[i];
     }

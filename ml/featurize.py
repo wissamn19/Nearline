@@ -5,7 +5,7 @@ def fnv1a(data: bytes) -> int:
         h = (h * 16777619) & 0xFFFFFFFF
     return h 
 
-def featurize(text: str, size: int = 213) -> list[int]:
+def featurize(text: str, size: int = 2048) -> list[int]:
 
     text = " ".join(text.lower().split())
     padded = " "+ text +" "
