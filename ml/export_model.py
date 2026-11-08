@@ -34,3 +34,7 @@ def p_task(text):
 for text in ["buy milk", "recipe from grandma", "call mom", "idea for the landing page"]:
     print(f"{p_task(text):.6f}  {text}")
 print("saved", root / "model.json", "-", round((root / "model.json").stat().st_size / 1024), "KB")
+
+
+check = json.loads((root / "model.json").read_text())
+print("X shape:", X.shape, "| weights in file:", len(check["coef"]), "| file:", root / "model.json")
