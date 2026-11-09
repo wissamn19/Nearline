@@ -1,65 +1,46 @@
 from pathlib import Path
-import pickle
 
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, roc_auc_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import (
+    RepeatedStratifiedKFold,
+    StratifiedKFold,
+    cross_val_predict,
+    cross_val_score,
+)
 
-try:
-    from .featurize import featurize
-except ImportError:  # pragma: no cover - allows running the file directly
-    from featurize import featurize
+from featurize import featurize
 
-import json, math
+root = Path(__file__).resolve().parent
+df = pd.read_csv(root / "data" / "captures.csv").dropna(subset=["text", "label"]).copy()
+df["label"] = df["label"].astype(str).str.strip().str.lower()
 
-def main() -> None:
-    root = Path(__file__).resolve().parent
-    data_path = root / "data" / "captures.csv"
-    model_path = root / "task_model.pkl"
+X = np.asarray([featurize(t) for t in df["text"]], dtype=np.float64)
+y = (df["label"] == "task").astype(int).to_numpy()
 
-    df = pd.read_csv(data_path)
-    df = df.dropna(subset=["text", "label"]).copy()
-    df["label"] = df["label"].astype(str).str.strip().str.lower()
+model = LogisticRegression(max_iter=1000)
 
-    X = np.asarray([featurize(text) for text in df["text"]], dtype=np.float64)
-    y = (df["label"] == "task").astype(int)
+# 1. How good is it? Cross-validation instead of one lucky split.
+cv = RepeatedStratifiedKFold(n_splits=5, n_repeats=10, random_state=42)
+acc = cross_val_score(model, X, y, cv=cv, scoring="accuracy")
+auc = cross_val_score(model, X, y, cv=cv, scoring="roc_auc")
+print(f"accuracy: {acc.mean():.3f} +/- {acc.std():.3f}")
+print(f"ROC AUC:  {auc.mean():.3f} +/- {auc.std():.3f}")
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=0.2,
-        random_state=42,
-        stratify=y,
-    )
+# 2. Each row's probability, predicted by a model that never saw that row.
+probs = cross_val_predict(
+    model, X, y, cv=StratifiedKFold(5, shuffle=True, random_state=42), method="predict_proba"
+)[:, 1]
+df["p_task"] = probs.round(2)
 
-    model = LogisticRegression(max_iter=1000, random_state=42)
-    model.fit(X_train, y_train)
+# 3. The mistakes.
+wrong = df[(probs >= 0.5) != (y == 1)].sort_values("p_task")
+print(f"\nwrong at cutoff 0.5: {len(wrong)} of {len(df)}")
+print(wrong[["text", "label", "p_task"]].to_string(index=False))
 
-    y_pred = model.predict(X_test)
-    y_proba = model.predict_proba(X_test)[:, 1]
-
-    acc = accuracy_score(y_test, y_pred)
-    auc = roc_auc_score(y_test, y_proba)
-
-
-    print(f"train size: {len(X_train)}")
-    print(f"test size: {len(X_test)}")
-    print(f"test accuracy: {acc:.3f}")
-    print(f"test ROC AUC: {auc:.3f}")
-    print("first 5 task probabilities:", y_proba[:5].tolist())
-
-    with model_path.open("wb") as f:
-        pickle.dump(model, f)
-
-    print(f"saved trained model to: {model_path}")
-
-
-d = json.load(open("model.json"))
-p = lambda t: 1 / (1 + math.exp(-(d["intercept"] + sum(w * c for w, c in zip(d["coef"], featurize(t))))))
-for t in ["buy milk", "buy mlik", "buuy milk", "milk"]:
-    print(round(p(t), 3), t)
-    
-if __name__ == "__main__":
-    main()
+# 4. Choosing the cutoff: task if p_task >= t, otherwise note.
+print("\ncutoff  accuracy  tasks kept as task  notes caught as note")
+for t in (0.3, 0.4, 0.5, 0.6, 0.7):
+    pred = (probs >= t).astype(int)
+    print(f"{t:>6}  {(pred == y).mean():>8.3f}  {pred[y == 1].mean():>18.3f}  {1 - pred[y == 0].mean():>20.3f}")
