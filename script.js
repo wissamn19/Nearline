@@ -39,6 +39,7 @@ function saveItems() {
 }
 
 /* ---------- Classify and create ---------- */
+const TASK_CUTOFF = 0.4;   // from the threshold table
 
 function classifyInput(text) {
   if (/^(https?:\/\/|www\.)/i.test(text)) {
@@ -47,7 +48,15 @@ function classifyInput(text) {
   if (text.startsWith('!')) {
     return { type: 'note', text: text.slice(1).trim() };
   }
-  return { type: 'task', text };
+
+  // If the model files didn't load, fall back to the old behavior
+  if (typeof pTask !== 'function') {
+    return { type: 'task', text };
+  }
+
+  const p = pTask(parseReminder(text).text || text);
+  if (!Number.isFinite(p)) return { type: 'task', text };
+  return { type: p >= TASK_CUTOFF ? 'task' : 'note', text };
 }
 
 function parseReminder(text) {
