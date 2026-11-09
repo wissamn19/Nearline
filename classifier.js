@@ -17,6 +17,7 @@ function featurize(text, size = 2048) {
             const index = fnv1a(new TextEncoder().encode(gram)) % size;
             counts[index]++;
         }
+        
     }
     return counts;
 }
