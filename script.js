@@ -192,6 +192,15 @@ function renderItem(item, isNew) {
     checkbox.type = 'checkbox';
     checkbox.checked = item.status === 'done';
     checkbox.setAttribute('aria-label', 'Mark task done');
+    const select = document.createElement('select');
+    select.setAttribute('aria-label', 'Move to');
+    const options = ['task', 'note'];
+    options.forEach(function (opt) {
+      const option = document.createElement('option');
+      option.value = opt;
+      option.textContent = opt;
+      select.appendChild(option);
+    });
     checkbox.addEventListener('change', function () {
       item.status = checkbox.checked ? 'done' : 'todo';
       li.classList.toggle('done', checkbox.checked);
@@ -199,6 +208,7 @@ function renderItem(item, isNew) {
       updateCounts();
     });
     li.appendChild(checkbox);
+    li.appendChild(select);
   }
 
   const body = document.createElement('div');
