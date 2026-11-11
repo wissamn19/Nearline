@@ -266,14 +266,16 @@ function captureText(raw, forcedType) {
 
   let type = forcedType;
   let text = clean;
+  let source = 'manual';
   if (!type) {
     const result = classifyInput(clean);
     type = result.type;
     text = result.text;
+    source = result.source;
   }
   if (!text) return false;
 
-  const item = createItem(text, type);
+  const item = createItem(text, type, source);
   items.push(item);
   saveItems();
   renderItem(item, true);

@@ -141,7 +141,7 @@ nearline/
 ├── index.html      Page structure and the SVG road
 ├── style.css       Design tokens, layout, hand-drawn styling, dark theme
 ├── script.js       Classifying, rendering, storage, reminders, animations
-├── docs/
+├── cover/
 │   └── cover.png
 ├── LICENSE
 └── README.md
