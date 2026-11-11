@@ -43,20 +43,20 @@ const TASK_CUTOFF = 0.4;   // from the threshold table
 
 function classifyInput(text) {
   if (/^(https?:\/\/|www\.)/i.test(text)) {
-    return { type: 'link', text };
+    return { type: 'link', source: 'rule', text };
   }
   if (text.startsWith('!')) {
-    return { type: 'note', text: text.slice(1).trim() };
+    return { type: 'note', source: 'manual', text: text.slice(1).trim() };
   }
 
   // If the model files didn't load, fall back to the old behavior
   if (typeof pTask !== 'function') {
-    return { type: 'task', text };
+    return { type: 'task', source: 'automatic', text };
   }
 
   const p = pTask(parseReminder(text).text || text);
-  if (!Number.isFinite(p)) return { type: 'task', text };
-  return { type: p >= TASK_CUTOFF ? 'task' : 'note', text };
+  if (!Number.isFinite(p)) return { type: 'task', source: 'automatic', text };
+  return { type: p >= TASK_CUTOFF ? 'task' : 'note', source: 'automatic', text };
 }
 
 function parseReminder(text) {
