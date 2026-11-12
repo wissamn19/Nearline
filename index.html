@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nearline</title> 
+  <title>Nearline</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
@@ -57,31 +57,22 @@
       </div>
 
       <div class="lane note" data-type="note">
-        <button class="node" type="button" aria-label="Add a note">
-          <span class="dot">
-          </span>Note<span class="count">0</span>
-        </button>
+        <button class="node" type="button" aria-label="Add a note"><span class="dot"></span>Note<span class="count">0</span></button>
         <input class="node-input" type="text" placeholder="Add a note" autocomplete="off" hidden>
         <ul id="notesList" data-empty="No notes yet. Start with ! to write one."></ul>
       </div>
 
       <div class="lane link" data-type="link">
-        <button class="node" type="button" aria-label="Add a link">
-          <span class="dot">
-          </span>Link
-          <span class="count">0</span>
-        </button>
+        <button class="node" type="button" aria-label="Add a link"><span class="dot"></span>Link<span class="count">0</span></button>
         <input class="node-input" type="text" placeholder="Paste a link" autocomplete="off" hidden>
-        <ul id="linksList" data-empty="No links yet. Paste one above.">
-        </ul>
+        <ul id="linksList" data-empty="No links yet. Paste one above."></ul>
       </div>
     </section>
   </main>
 
   <div id="toasts" class="toasts" aria-live="polite"></div>
 
-  
-  <script src="ml/model.js"></script>
+  <script src="model.js"></script>
   <script src="classifier.js"></script>
   <script src="script.js"></script>
 </body>

@@ -527,23 +527,25 @@ ul:empty::before {
   cursor: pointer;
 }
 
-.move {
-     flex: none;
-     align-self: flex-start;
-     padding: 0 4px;
-     font: inherit;
-     font-size: 14px;
-     color: var(--ink);
-     background: var(--paper);
-     border: 1.5px solid var(--stroke);
-     border-radius: 6px;
-     opacity: 0.5;
-     cursor: pointer;
-}
-.item:hover .move, .move:focus-visible { opacity: 1; }
-
 .toast-actions .primary { color: var(--on-brand); background: var(--brand); }
 .toast-actions button:hover { transform: translateY(-1px) rotate(-0.6deg); }
 .toast-actions button:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 
 @keyframes toast-in { from { opacity: 0; transform: translateY(18px); } }
+
+/* Move-to dropdown on each card */
+.move {
+  flex: none;
+  align-self: flex-start;
+  padding: 0 4px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--stroke);
+  border-radius: 6px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.item:hover .move, .move:focus-visible { opacity: 1; }
