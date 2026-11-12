@@ -38,6 +38,29 @@ function saveItems() {
   localStorage.setItem('items', JSON.stringify(items));
 }
 
+// Wraps a value in quotes, and doubles any quotes inside it,
+// so a comma in the text can't break the columns.
+function csvCell(value) {
+  return '"' + String(value).replace(/"/g, '""') + '"';
+}
+
+function exportCsv() {
+  const lines = ['text,label,source'];
+  items
+    .filter(function (item) { return item.type !== 'link'; })   // links are handled by a rule, not the model
+    .forEach(function (item) {
+      lines.push([item.text, item.type, item.source || 'auto'].map(csvCell).join(','));
+    });
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });   // a file that exists only in memory
+  const url = URL.createObjectURL(blob);                              // a temporary address for that file
+  const a = document.createElement('a');                              // a link nobody sees
+  a.href = url;
+  a.download = 'nearline-export.csv';                                 // "download" instead of "open"
+  a.click();                                                          // press it from code
+  URL.revokeObjectURL(url);                                           // clean up
+}
+
 /* ---------- Classify and create ---------- */
 const TASK_CUTOFF = 0.4;   // from the threshold table
 
