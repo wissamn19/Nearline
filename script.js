@@ -292,6 +292,13 @@ function askPermission() {
   }
 }
 
+function captureText(raw, forcedType) {
+  if (!forcedType && raw.trim() === '/export') {
+    exportCsv();
+    return true;          // returning true clears the input, and nothing is saved as an item
+  }
+ 
+
 // forcedType comes from clicking a node. Without it, the text is auto-sorted.
 function captureText(raw, forcedType) {
   const clean = raw.trim();
