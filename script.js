@@ -1,16 +1,5 @@
 const input = document.querySelector('#myInput');
-
 const preview = document.querySelector('#preview');
-
-// Shows where the text will land, before you press Enter.
-function updatePreview() {
-  const text = input.value.trim();
-  if (!text) { preview.hidden = true; return; }
-  const type = classifyInput(text).type;
-  preview.textContent = 'Files as ' + type[0].toUpperCase() + type.slice(1);
-  preview.style.setProperty('--c', 'var(--' + type + ')');
-  preview.hidden = false;
-}
 
 const lists = {
   task: document.querySelector('#tasksList'),
@@ -18,11 +7,18 @@ const lists = {
   link: document.querySelector('#linksList')
 };
 
+/* ---------- Storage ---------- */
+
 // Older saved items stored CSS selectors as their type. Convert them once on load.
 const OLD_TYPES = { '#tasksList': 'task', '#notesList': 'note', '#linksList': 'link' };
 
 function loadItems() {
-  const saved = JSON.parse(localStorage.getItem('items')) || [];
+  let saved = [];
+  try {
+    saved = JSON.parse(localStorage.getItem('items')) || [];
+  } catch (err) {
+    saved = [];
+  }
   return saved.map(function (item) {
     return {
       ...item,
@@ -38,7 +34,9 @@ function saveItems() {
   localStorage.setItem('items', JSON.stringify(items));
 }
 
-// Wraps a value in quotes, and doubles any quotes inside it,
+/* ---------- Export for training ---------- */
+
+// Wraps a value in quotes and doubles any quotes inside it,
 // so a comma in the text can't break the columns.
 function csvCell(value) {
   return '"' + String(value).replace(/"/g, '""') + '"';
@@ -47,7 +45,7 @@ function csvCell(value) {
 function exportCsv() {
   const lines = ['text,label,source'];
   items
-    .filter(function (item) { return item.type !== 'link'; })   // links are handled by a rule, not the model
+    .filter(function (item) { return item.type !== 'link'; })   // links come from a rule, not the model
     .forEach(function (item) {
       lines.push([item.text, item.type, item.source || 'auto'].map(csvCell).join(','));
     });
@@ -62,8 +60,11 @@ function exportCsv() {
 }
 
 /* ---------- Classify and create ---------- */
+
 const TASK_CUTOFF = 0.4;   // from the threshold table
 
+// Returns { type, source, text }.
+// source: 'rule' (link pattern), 'manual' (you typed !), 'auto' (the model decided)
 function classifyInput(text) {
   if (/^(https?:\/\/|www\.)/i.test(text)) {
     return { type: 'link', source: 'rule', text };
@@ -74,12 +75,22 @@ function classifyInput(text) {
 
   // If the model files didn't load, fall back to the old behavior
   if (typeof pTask !== 'function') {
-    return { type: 'task', source: 'automatic', text };
+    return { type: 'task', source: 'auto', text };
   }
 
   const p = pTask(parseReminder(text).text || text);
-  if (!Number.isFinite(p)) return { type: 'task', source: 'automatic', text };
-  return { type: p >= TASK_CUTOFF ? 'task' : 'note', source: 'automatic', text };
+  if (!Number.isFinite(p)) return { type: 'task', source: 'auto', text };
+  return { type: p >= TASK_CUTOFF ? 'task' : 'note', source: 'auto', text };
+}
+
+// Shows where the text will land before you press Enter.
+function updatePreview() {
+  const text = input.value.trim();
+  if (!text || text === '/export') { preview.hidden = true; return; }
+  const type = classifyInput(text).type;
+  preview.textContent = 'Files as ' + type[0].toUpperCase() + type.slice(1);
+  preview.style.setProperty('--c', 'var(--' + type + ')');
+  preview.hidden = false;
 }
 
 function parseReminder(text) {
@@ -98,12 +109,15 @@ function parseReminder(text) {
   return { text: text.replace(regex, '').trim(), remindAt: d.getTime() };
 }
 
-function createItem(text, type) {
+// predicted keeps the first decision, type is the current one (it changes if you move the item).
+function createItem(text, type, source) {
   const reminder = parseReminder(text);
   return {
     id: Date.now() + Math.random(),
     text: reminder.text || text,
     type: type,
+    predicted: type,
+    source: source || 'manual',
     status: 'todo',
     createdAt: Date.now(),
     remindAt: reminder.remindAt,
@@ -201,6 +215,28 @@ function driveTo(type) {
   };
 }
 
+// The dropdown that fixes a wrong sort. A correction is the best training data there is.
+function makeMoveSelect(item) {
+  const select = document.createElement('select');
+  select.className = 'move';
+  select.setAttribute('aria-label', 'Move to');
+  ['task', 'note'].forEach(function (type) {
+    const option = document.createElement('option');
+    option.value = type;
+    option.textContent = type;
+    option.selected = type === item.type;
+    select.appendChild(option);
+  });
+  select.addEventListener('change', function () {
+    item.type = select.value;
+    item.source = 'manual';
+    item.corrected = true;
+    saveItems();
+    renderAll();
+  });
+  return select;
+}
+
 function renderItem(item, isNew) {
   const list = lists[item.type];
   if (!list) return;
@@ -215,15 +251,6 @@ function renderItem(item, isNew) {
     checkbox.type = 'checkbox';
     checkbox.checked = item.status === 'done';
     checkbox.setAttribute('aria-label', 'Mark task done');
-    const select = document.createElement('select');
-    select.setAttribute('aria-label', 'Move to');
-    const options = ['task', 'note'];
-    options.forEach(function (opt) {
-      const option = document.createElement('option');
-      option.value = opt;
-      option.textContent = opt;
-      select.appendChild(option);
-    });
     checkbox.addEventListener('change', function () {
       item.status = checkbox.checked ? 'done' : 'todo';
       li.classList.toggle('done', checkbox.checked);
@@ -231,7 +258,6 @@ function renderItem(item, isNew) {
       updateCounts();
     });
     li.appendChild(checkbox);
-    li.appendChild(select);
   }
 
   const body = document.createElement('div');
@@ -267,6 +293,9 @@ function renderItem(item, isNew) {
 
   li.appendChild(body);
 
+  // Links are filed by a rule, so only tasks and notes can be moved.
+  if (item.type !== 'link') li.appendChild(makeMoveSelect(item));
+
   const del = document.createElement('button');
   del.type = 'button';
   del.className = 'del';
@@ -284,6 +313,12 @@ function renderItem(item, isNew) {
   if (isNew) driveTo(item.type);
 }
 
+function renderAll() {
+  Object.keys(lists).forEach(function (key) { lists[key].innerHTML = ''; });
+  items.forEach(function (item) { renderItem(item, false); });
+  updateCounts();
+}
+
 /* ---------- Capture ---------- */
 
 function askPermission() {
@@ -292,17 +327,15 @@ function askPermission() {
   }
 }
 
-function captureText(raw, forcedType) {
-  if (!forcedType && raw.trim() === '/export') {
-    exportCsv();
-    return true;          // returning true clears the input, and nothing is saved as an item
-  }
- 
-
 // forcedType comes from clicking a node. Without it, the text is auto-sorted.
 function captureText(raw, forcedType) {
   const clean = raw.trim();
   if (!clean) return false;
+
+  if (!forcedType && clean === '/export') {
+    exportCsv();
+    return true;   // clears the input, and nothing is saved as an item
+  }
 
   let type = forcedType;
   let text = clean;
@@ -332,6 +365,12 @@ input.addEventListener('keydown', function (e) {
 
 input.addEventListener('input', updatePreview);
 
+document.querySelector('#captureBtn').addEventListener('click', function () {
+  if (captureText(input.value)) input.value = '';
+  updatePreview();
+  input.focus();
+});
+
 const examples = ["What's on your mind?", 'buy milk', '!idea for the landing page', 'call mom @17:30', 'https://github.com'];
 let exampleIndex = 0;
 setInterval(function () {
@@ -342,7 +381,7 @@ setInterval(function () {
 
 // Press / anywhere to jump to the capture bar.
 document.addEventListener('keydown', function (e) {
-  if (e.key === '/' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) {
+  if (e.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) {
     e.preventDefault();
     input.focus();
   }
@@ -369,12 +408,6 @@ document.querySelectorAll('.lane').forEach(function (lane) {
 });
 
 /* ---------- Reminders ---------- */
-
-function renderAll() {
-  Object.keys(lists).forEach(function (key) { lists[key].innerHTML = ''; });
-  items.forEach(function (item) { renderItem(item, false); });
-  updateCounts();
-}
 
 function makeButton(label, className, onClick) {
   const button = document.createElement('button');
@@ -448,7 +481,6 @@ function checkReminders() {
 
 /* ---------- Start ---------- */
 
-items.forEach(function (item) { renderItem(item, false); });
-updateCounts();
+renderAll();
 checkReminders();
 setInterval(checkReminders, 30000);
