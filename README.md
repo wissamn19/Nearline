@@ -73,11 +73,11 @@ You can get in and back to what you were doing in a few seconds, without touchin
 Nearline has no dependencies and no build step.
 
 ```bash
-git clone https://github.com/wissamn19/nearline.git
+git clone https://github.com/YOUR-USERNAME/nearline.git
 cd nearline
 ```
 
-Then open `index.html` in your browser. If you use VS Code, the **Live Server** extension gives you auto-reload while you edit.
+Then open `index.html` (the landing page) in your browser, or go straight to `app.html` for the app. If you use VS Code, the **Live Server** extension gives you auto-reload while you edit.
 
 **Test a reminder:** type `test @HH:MM` with a time a minute or two ahead, allow notifications when the browser asks, and keep the tab open.
 
@@ -138,10 +138,16 @@ Every entry is stored as a small object:
 
 ```
 nearline/
-├── index.html      Page structure and the SVG road
+├── index.html      Landing page with a live demo of the sorting
+├── app.html        The app: capture bar, roadmap, reminders
 ├── style.css       Design tokens, layout, hand-drawn styling, dark theme
-├── script.js       Classifying, rendering, storage, reminders, animations
-├── cover/
+├── site.css        Styles for the landing page
+├── script.js       App logic: sorting, rendering, storage, reminders, export
+├── landing.js      Live "try it" demo on the landing page
+├── classifier.js   Featurizer and prediction, matching the Python one
+├── model.js        The trained model: 2048 weights and an intercept
+├── ml/             Training data, featurizer, training and export scripts
+├── docs/
 │   └── cover.png
 ├── LICENSE
 └── README.md
