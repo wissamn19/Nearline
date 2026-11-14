@@ -62,7 +62,7 @@ You can get in and back to what you were doing in a few seconds, without touchin
 
 ## Demo
 
-**Try it:** [wissamn19.github.io/nearline](https://wissamn19.github.io/nearline/)
+**Try it:** [wissamn19.github.io/Nearline](https://wissamn19.github.io/Nearline/)
 
 <!-- Add a short screen recording here, for example:
 ![Nearline in action](docs/demo.gif)
