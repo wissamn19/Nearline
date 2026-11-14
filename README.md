@@ -69,7 +69,7 @@ You can get in and back to what you were doing in a few seconds, without touchin
 Nearline has no dependencies and no build step.
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/nearline.git
+git clone https://github.com/wissamn19/nearline.git
 cd nearline
 ```
 
