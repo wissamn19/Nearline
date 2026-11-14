@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://YOUR-USERNAME.github.io/nearline/"><b>Live demo</b></a> ·
+  <a href="https://wissamn19.github.io/Nearline/"><b>Live demo</b></a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#roadmap">Roadmap</a>
 </p>
@@ -58,11 +58,11 @@ You can get in and back to what you were doing in a few seconds, without touchin
 - **A roadmap, not a list.** A winding road connects the three stops, and every new entry drives along it to its stop.
 - **Private by design.** No account, no server. Everything is saved in your browser.
 - **Accessible details.** Keyboard-friendly controls, visible focus states, reduced-motion support, and a dark theme that follows your system.
-- **Hand-drawn look,** inspired by Excalidraw.
+- **A bold, colorful design** inspired by ClickUp, with light and dark themes.
 
 ## Demo
 
-**Try it:** [wissamn19.github.io/nearline](https://wissamn19.github.io/nearline/)
+**Try it:** [YOUR-USERNAME.github.io/nearline](https://YOUR-USERNAME.github.io/nearline/)
 
 <!-- Add a short screen recording here, for example:
 ![Nearline in action](docs/demo.gif)
@@ -140,8 +140,7 @@ Every entry is stored as a small object:
 nearline/
 ├── index.html      Landing page with a live demo of the sorting
 ├── app.html        The app: capture bar, roadmap, reminders
-├── style.css       Design tokens, layout, hand-drawn styling, dark theme
-├── site.css        Styles for the landing page
+├── style.css       Design tokens and styles for the landing page and the app
 ├── script.js       App logic: sorting, rendering, storage, reminders, export
 ├── landing.js      Live "try it" demo on the landing page
 ├── classifier.js   Featurizer and prediction, matching the Python one
@@ -155,13 +154,13 @@ nearline/
 
 ### Built with
 
-HTML, CSS (custom properties, grid, `color-mix`), and plain JavaScript. It uses SVG paths and filters, the Web Animations API, `localStorage`, and the Notification API. There are no frameworks, libraries or build tools.
+HTML, CSS (custom properties, grid, `color-mix`), and plain JavaScript. It uses SVG paths, the Web Animations API, `localStorage`, and the Notification API. There are no frameworks, libraries or build tools.
 
 It targets current versions of Chrome, Edge, Firefox and Safari.
 
 ## Privacy
 
-Nearline has no accounts, no analytics, and no server. Your entries are saved in your browser's `localStorage` on your device and are never sent anywhere. The only network request the page makes is for the two fonts from Google Fonts.
+Nearline has no accounts, no analytics, and no server. Your entries are saved in your browser's `localStorage` on your device and are never sent anywhere. The only network request the page makes is for the font from Google Fonts.
 
 Clearing your browser's site data for the page deletes your entries.
 
@@ -201,8 +200,8 @@ Contributions are welcome. For anything bigger than a small fix, please open an 
 
 ## Credits
 
-- Visual style inspired by [Excalidraw](https://github.com/excalidraw/excalidraw)
-- Fonts: [Caveat](https://fonts.google.com/specimen/Caveat) and [Patrick Hand](https://fonts.google.com/specimen/Patrick+Hand), both under the SIL Open Font License
+- Visual style inspired by ClickUp's website
+- Font: [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans), under the SIL Open Font License
 
 ## License
 
