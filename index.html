@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nearline</title>
+  <title>Nearline: type anything, it files itself</title>
+  <meta name="description" content="A quick-capture app that sorts what you type into tasks, notes and links, and reminds you when something is due. Private, free and open source.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="site.css">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -16,64 +18,102 @@
       <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5"/>
     </filter>
   </svg>
+
   <header class="top">
-    <div class="brand">
+    <a class="brand" href="index.html" aria-label="Nearline home">
       <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
-        <defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#F43F6E"/><stop offset=".5" stop-color="#4289FF"/><stop offset="1" stop-color="#0E9F5B"/></linearGradient></defs>
+        <defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#E03131"/><stop offset=".5" stop-color="#1971C2"/><stop offset="1" stop-color="#2F9E44"/></linearGradient></defs>
         <path d="M3 16h26" stroke="url(#lg)" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="6" cy="16" r="4.5" fill="#F43F6E"/><circle cx="16" cy="16" r="4.5" fill="#4289FF"/><circle cx="26" cy="16" r="4.5" fill="#0E9F5B"/>
+        <circle cx="6" cy="16" r="4.5" fill="#E03131"/><circle cx="16" cy="16" r="4.5" fill="#1971C2"/><circle cx="26" cy="16" r="4.5" fill="#2F9E44"/>
       </svg>
       Nearline
-    </div>
-    <span class="saved">Saved on this device</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#model">The model</a>
+      <a href="#roadmap">Roadmap</a>
+      <a class="pill" href="app.html">Open app</a>
+    </nav>
   </header>
 
-  <main class="app">
+  <main class="site">
     <section class="hero">
       <h1 class="headline">Capture anything.<br>Nearline <span class="scribble">files it.</span></h1>
-      <p class="sub">Type a task, a note or a link. It lands on the right line.</p>
+      <p class="sub">A tiny capture bar that sorts what you type into tasks, notes and links, and reminds you when something is due.</p>
+
       <div class="capture">
         <div class="field">
-          <input id="myInput" type="text" placeholder="What's on your mind?" autocomplete="off" autofocus>
-          <span id="preview" class="preview" hidden></span>
+          <input id="try" type="text" placeholder="Try it: type anything" autocomplete="off" aria-label="Try Nearline">
+          <span id="tryTag" class="preview" hidden></span>
         </div>
-        <button id="captureBtn" class="cta" type="button">Capture</button>
+        <a class="cta" href="app.html">Open the app</a>
       </div>
-      <p class="hint">Plain text becomes a task. Start with ! for a note. Add @17:30 for a reminder. Press / to jump here.</p>
+      <p id="tryWhy" class="hint">Nothing here is saved. Try an example, or type your own.</p>
+      <div class="examples">
+        <button type="button" class="ex" data-text="buy milk">buy milk</button>
+        <button type="button" class="ex" data-text="recipe from grandma">recipe from grandma</button>
+        <button type="button" class="ex" data-text="!idea for the landing page">!idea for the landing page</button>
+        <button type="button" class="ex" data-text="https://github.com">https://github.com</button>
+        <button type="button" class="ex" data-text="call mom @17:30">call mom @17:30</button>
+      </div>
     </section>
 
-    <section class="timeline" aria-label="Captured items">
-      <svg class="road" viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true">
-        <path class="road-edge" d="M0 44 L166.7 44 C333 44 333 100 500 100 C667 100 667 44 833.3 44 L1000 44"/>
-        <path id="roadPath" class="road-bed" d="M0 44 L166.7 44 C333 44 333 100 500 100 C667 100 667 44 833.3 44 L1000 44"/>
-        <path class="road-line" d="M0 44 L166.7 44 C333 44 333 100 500 100 C667 100 667 44 833.3 44 L1000 44"/>
-      </svg>
-      <span class="flag start">Start</span>
-      <span class="flag end">Filed</span>
-      <div class="lane task" data-type="task">
-        <button class="node" type="button" aria-label="Add a task"><span class="dot"></span>Task<span class="count">0</span></button>
-        <input class="node-input" type="text" placeholder="Add a task" autocomplete="off" hidden>
-        <ul id="tasksList" data-empty="No tasks yet. Type one above."></ul>
+    <section id="how" class="block">
+      <h2>How it works</h2>
+      <div class="grid3">
+        <article class="box c-task"><span class="num">1</span><h3>Type</h3><p>One bar, no menus and no folders. Press <b>/</b> anywhere to jump to it, then Enter.</p></article>
+        <article class="box c-note"><span class="num">2</span><h3>It files itself</h3><p>Links match a rule, a leading <b>!</b> makes a note, and a small model decides the rest. A tag shows where it will land before you commit.</p></article>
+        <article class="box c-link"><span class="num">3</span><h3>It reminds you</h3><p>Add <b>@17:30</b> to anything. At that time a card appears with <b>Done</b> and <b>Snooze 10 min</b>.</p></article>
       </div>
+    </section>
 
-      <div class="lane note" data-type="note">
-        <button class="node" type="button" aria-label="Add a note"><span class="dot"></span>Note<span class="count">0</span></button>
-        <input class="node-input" type="text" placeholder="Add a note" autocomplete="off" hidden>
-        <ul id="notesList" data-empty="No notes yet. Start with ! to write one."></ul>
+    <section class="block">
+      <h2>Everything on one road</h2>
+      <p class="lede">Your entries live on a roadmap with three stops. New items drive along the road to their stop.</p>
+      <div class="grid3">
+        <article class="box c-task"><h3>Click a stop to choose</h3><p>Disagree with the sorting? Click Task, Note or Link and type straight into it.</p></article>
+        <article class="box c-note"><h3>Fix mistakes in one click</h3><p>Every card has a Move to dropdown. Corrections are saved as training data.</p></article>
+        <article class="box c-link"><h3>Progress at a glance</h3><p>The Task stop shows how many are done, like 3/5, and ticking a box updates it.</p></article>
+        <article class="box c-link"><h3>Private by design</h3><p>No account and no server. Everything is saved in your browser on your device.</p></article>
+        <article class="box c-task"><h3>Your data, your file</h3><p>Type <b>/export</b> to download your entries as a CSV.</p></article>
+        <article class="box c-note"><h3>Light and dark</h3><p>A hand-drawn look that follows your system theme, with reduced motion respected.</p></article>
       </div>
+    </section>
 
-      <div class="lane link" data-type="link">
-        <button class="node" type="button" aria-label="Add a link"><span class="dot"></span>Link<span class="count">0</span></button>
-        <input class="node-input" type="text" placeholder="Paste a link" autocomplete="off" hidden>
-        <ul id="linksList" data-empty="No links yet. Paste one above."></ul>
+    <section id="model" class="block">
+      <h2>A small model, honestly measured</h2>
+      <p class="lede">Telling a task from a note is the hard part. Nearline uses a tiny model trained on hand-labeled examples. It runs in your browser, with no server and no API.</p>
+      <div class="grid3">
+        <article class="box c-task"><div class="stat">~72%</div><p>right on task versus note, measured with cross-validation on 124 examples</p></article>
+        <article class="box c-note"><div class="stat">1 click</div><p>to fix a wrong sort, and every fix is collected to retrain the model</p></article>
+        <article class="box c-link"><div class="stat">0 servers</div><p>the model is 2048 numbers in a file, and your text never leaves the page</p></article>
       </div>
+      <p class="lede small">Links are never guessed. A rule files them. And the <b>!</b> prefix always wins over the model.</p>
+    </section>
+
+    <section id="roadmap" class="block">
+      <h2>Roadmap</h2>
+      <ul class="checks">
+        <li class="done">Capture, auto-sort and save locally</li>
+        <li class="done">Reminders with an in-app card and notifications</li>
+        <li class="done">A trained model to tell tasks from notes</li>
+        <li class="done">Corrections and CSV export for retraining</li>
+        <li>Retrain on real captures</li>
+        <li>Rebuild in React</li>
+        <li>Desktop app with Tauri, with reminders while the app is closed</li>
+      </ul>
+      <p class="cta-row"><a class="cta" href="app.html">Open the app</a></p>
     </section>
   </main>
 
-  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <footer class="foot">
+    <p>Nearline is free and open source under the MIT license.
+      <a href="https://github.com/YOUR-USERNAME/nearline">View on GitHub</a></p>
+    <p>Visual style inspired by <a href="https://github.com/excalidraw/excalidraw">Excalidraw</a>.</p>
+  </footer>
 
   <script src="model.js"></script>
   <script src="classifier.js"></script>
-  <script src="script.js"></script>
+  <script src="landing.js"></script>
 </body>
 </html>
