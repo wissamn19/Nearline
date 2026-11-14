@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="cover/cover.png" alt="Nearline: capture anything, and it files itself into tasks, notes and links" width="100%">
+  <img src="docs/cover.png" alt="Nearline: capture anything, and it files itself into tasks, notes and links" width="100%">
 </p>
 
 <p align="center">
